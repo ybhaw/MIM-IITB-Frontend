@@ -4,6 +4,9 @@
       <v-card-title>
         {{name}}
         <v-spacer></v-spacer>
+        <v-btn class="mr-2 primary" color="#00f" @click="createDialog = true">
+          Create {{name}}
+        </v-btn>
         <v-text-field
           v-model="search"
           label="Search"
@@ -16,6 +19,7 @@
           :headers="headers"
           :items="data"
           item-key="id"
+          :search="search"
           class="elevation-1"
           v-bind:loading="loading"
           v-bind:show-expand="showExpand"
@@ -33,12 +37,13 @@
           </template>
 
           <template v-slot:no-data> <!-- Item to show when there is no data -->
-            <v-btn color="primary">There is nothing to show here!</v-btn>
+            <div color="primary">There is nothing to show here!</div>
           </template>
         </v-data-table>
       </v-container>
     </v-card>
-    <component v-bind:is="editComp" v-if="dialog" v-bind:put="putApi" v-bind:data="itemToModify" @closeEdit="closeEdit" @saveAndCloseEdit="saveAndCloseEdit"></component>
+    <component v-bind:is="editComp" v-bind="$props" v-if="dialog" v-bind:put="putApi" v-bind:data="itemToModify" @closeEdit="closeEdit" @saveAndCloseEdit="saveAndCloseEdit"></component>
+    <component v-bind:is="createComp" v-bind="$props" v-if="createDialog" v-bind:post="postApi" v-bind:data="itemToModify" @closeCreate="closeCreate" @saveAndCloseCreate="saveAndCloseCreate"></component>
   </v-container>
 </template>
 
@@ -48,6 +53,7 @@
     data: function(){
       return {
         dialog: false,
+        createDialog: false,
         search: '',
         selected: [],
         data: [],
@@ -66,7 +72,9 @@
     components: {
       "foodType": () => import("../food/foodType.vue"),
       "foodEdit": () => import("../food/edit.vue"),
-      "foodTypeEdit": () => import("../foodType/edit.vue")
+      "foodTypeEdit": () => import("../foodType/edit.vue"),
+      "foodCreate": () => import("../food/create"),
+      "foodTypeCreate": () => import("../foodType/create")
     },
     props: {
       get: String,
@@ -77,7 +85,9 @@
       headers : Array,
       expandProps: Object,
       expandComp: String,
-      editComp: String
+      editComp: String,
+      createComp: String,
+      parentId: String
     },
     beforeMount: function () {
       this.getApi = this.get ? this.get : this.name;
@@ -125,6 +135,7 @@
         if(this.name==="Food")
         {
           let t = this.compProps;
+          t.parentId = item.id;
           t.get = "FoodType/food/" + item.id;
           return t;
         }
@@ -138,6 +149,16 @@
       saveAndCloseEdit: function(updatedItem){
         Object.assign(this.data[this.itemIdx] , updatedItem);
         this.dialog = false;
+      },
+      saveAndCloseCreate: function(addItem)
+      {
+        this.data.push(addItem);
+        Object.assign(this.data,{});
+        this.createDialog = false;
+      },
+      closeCreate: function()
+      {
+        this.createDialog = false;
       }
     },
   }

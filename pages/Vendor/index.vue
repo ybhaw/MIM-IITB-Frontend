@@ -1,7 +1,7 @@
 <template>
   <div>
     <data-table
-      name="Food"
+      name="Vendor"
       v-bind:headers="headers"
       v-bind:expand-props="compProps"
       expand-comp="foodType"
@@ -17,13 +17,13 @@
 
 <script>
   export default {
-		name: "food",
+    name: "Vendor",
     components: {
-		  "data-table": () => import("../../components/app/dataTable"),
+      "data-table": () => import("../../components/app/dataTable"),
     },
     data: function(){
-		  return {
-		    headers: [
+      return {
+        headers: [
           { text: "Name", value: "name" },
           { text: "Expirable", value: "expirable" },
           { text: "Total Amount", value: "totalValue" },
@@ -39,7 +39,7 @@
         }
       }
     }
-	}
+  }
 </script>
 
 <style scoped>

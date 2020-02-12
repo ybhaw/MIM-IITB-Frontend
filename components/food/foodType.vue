@@ -1,5 +1,11 @@
 <template>
-  <data-table name="FoodType" v-bind:headers="headers" editComp="foodTypeEdit" v-bind:get="get"></data-table>
+  <data-table
+    name="FoodType"
+    v-bind:headers="headers"
+    v-bind:get="get"
+    v-bind:parentId="parentId"
+    edit-comp="foodTypeEdit"
+    create-comp="foodTypeCreate"/>
 </template>
 
 <script>
@@ -15,6 +21,7 @@
       delete: String,
       name: String,
       headers : Array,
+      parentId: String,
       "show-expand" : Boolean,
       "component-properties": Object,
     }
